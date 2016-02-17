@@ -1,0 +1,4 @@
+- name: "Generate htpasswd file"
+  template:
+    dest: "{{ dest }}"
+    src: files/htpasswd.j2

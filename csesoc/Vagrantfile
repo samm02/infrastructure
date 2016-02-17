@@ -1,0 +1,76 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/wily64"
+
+  config.vm.network "private_network", ip: "192.168.101.100"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+
+    # Get Deps
+    apt-get install -y apache2 php5 libapache2-mod-php5 php5-mcrypt libapache2-mod-fastcgi php5-fpm
+    apt-get install -y python
+
+    # Configure csesoc user
+    useradd -m -s /bin/bash csesoc
+    su csesoc -c "mkdir /home/csesoc/.ssh"
+    su csesoc -c "cat /vagrant/secrets/id_rsa.pub" > /home/csesoc/.ssh/authorized_keys
+    su csesoc -c "mkdir /home/csesoc/public_html/"
+
+    # Configure Apache
+    ln -s /etc/apache2/mods-available/userdir.* /etc/apache2/mods-enabled/
+
+    mkdir /web/
+    ln -s /home/csesoc/public_html/ /web/csesoc
+
+    sudo a2enmod actions
+    sudo a2enmod cgi
+
+    cat > /etc/apache2/mods-enabled/userdir.conf <<EOF
+<IfModule mod_userdir.c>
+    UserDir public_html
+    UserDir disabled root
+    <Directory /home/*/public_html>
+            AllowOverride FileInfo AuthConfig Limit Indexes
+            Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
+            Options +ExecCGI
+            AddHandler cgi-script cgi
+
+            <Limit GET POST OPTIONS>
+                    Require all granted
+            </Limit>
+            <LimitExcept GET POST OPTIONS>
+                    Require all denied
+            </LimitExcept>
+    </Directory>
+</IfModule>
+EOF
+
+    cat > /etc/apache2/mods-enabled/php5.conf <<EOF
+<FilesMatch ".+\.ph(p[345]?|t|tml)$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+<FilesMatch ".+\.phps$">
+    SetHandler application/x-httpd-php-source
+    # Deny access to raw php sources by default
+    # To re-enable it's recommended to enable access to the files
+    # only in specific virtual host or directory
+    Require all denied
+</FilesMatch>
+# Deny access to files without filename (e.g. '.php')
+<FilesMatch "^\.ph(p[345]?|t|tml|ps)$">
+    Require all denied
+</FilesMatch>
+EOF
+
+    /etc/init.d/apache2 restart
+
+  SHELL
+end
