@@ -1,0 +1,13 @@
+---
+
+- name: Generate sites configuration
+  template:
+    src: 'files/nginx.conf.j2'
+    dest: '/etc/nginx/sites-enabled/{{ name.replace(".", "_") }}.conf'
+
+  with_items: "{{ nginx_sites }}"
+
+- name: Reload nginx
+  service:
+    name: nginx
+    state: reloaded

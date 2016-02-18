@@ -1,0 +1,75 @@
+- name: "Server Lockdown Security Policies"
+  hosts: all
+  tags: 
+    - lockdown
+    - security
+  roles:
+    - name: franklinkim.ufw
+      ufw_rules:
+        - port: 443
+          rule: allow
+        - port: 80
+          rule: allow
+
+      ufw_applications:
+        - name: OpenSSH
+          rule: allow
+
+    - name: mattwillsher.sshd
+      sshd:
+        PasswordAuthentication: no
+        PermitRootLogin: without-password
+
+
+- name: "Deploy Services with Docker"
+  hosts: all
+  tags: 
+    - docker
+    - deployment
+  roles:
+    - name: angstwad.docker_ubuntu
+    # - name: nickw444.systemd_docker
+    #   image: 
+
+- name: Copy SSL Certificates and Privkeys
+  hosts: all
+  tags:
+    - secrets
+    - nginx
+  tasks:
+    - name: "Ensure *.csesoc.unsw.edu.au secrets folder exists"
+      file:
+        path: /secrets
+        state: directory
+        recurse: yes
+    - name: Copy SSL Certificates
+      copy:
+        src: "{{ item }}"
+        dest: "/secrets/"
+      with_fileglob:
+        - "./secrets/csesoc.unsw.edu.au/*"
+
+
+- name: "Deploy Nginx Configuration"
+  hosts: all
+  tags: nginx
+  roles:
+    - name: jdauphant.nginx
+      tags: nginx-config
+    - name: local.nginx_reverse
+      tags: nginx-config-reverse
+      nginx_sites:
+        - name: "nickwhyte.com"
+          upstream: 6000
+          force_ssl: false
+          ssl_certificate: "/secrets/server.crt"
+          ssl_certificate_key: "/secrets/server.key"
+
+#     nginx_sites:
+#       csesoc.unsw.edu.au:
+#       csesoc.com.au:
+#       issocsopen.com:
+#       bark.csesoc.unsw.edu.au:
+#       wiki.csesoc.unsw.edu.au:
+#       pathways.csesoc.unsw.edu.au:
+#       showc.se:

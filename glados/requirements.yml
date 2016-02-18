@@ -1,0 +1,8 @@
+- src: ansible-city.users_and_groups
+- src: angstwad.docker_ubuntu
+- src: mattwillsher.sshd
+- src: franklinkim.ufw
+- src: jdauphant.nginx
+
+- src: git+git@github.com:nickw444/ansible-systemd_docker
+  name: nickw444.systemd_docker
