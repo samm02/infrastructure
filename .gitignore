@@ -1,1 +1,4 @@
+.vagrant/*
+roles/*
+!roles/local.*
 *.DS_Store

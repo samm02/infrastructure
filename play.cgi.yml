@@ -1,6 +1,6 @@
 ---
 - name: "Configure the CSESoc Account"
-  hosts: all
+  hosts: cgi_servers
   tasks:
     - name: "Clear existing public_html"
       file:
@@ -13,7 +13,7 @@
         dest: ~/public_html
 
 - name: "Configure UDB htaccess"
-  hosts: all
+  hosts: cgi_servers
   tags: secrets
   roles:
     - name: local.htpasswd
