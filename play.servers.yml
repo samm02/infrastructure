@@ -1,6 +1,5 @@
 - name: "Server Lockdown Security Policies"
-  hosts: 
-    - private_servers
+  hosts: private_servers
   tags: 
     - lockdown
     - security
@@ -22,7 +21,7 @@
         PermitRootLogin: without-password
 
 - name: Configure Authorized Keys
-  hosts: all
+  hosts: private_servers
   tags: 
     - lockdown
     - security
@@ -56,10 +55,8 @@
         recurse: yes
     - name: Copy SSL Certificates
       copy:
-        src: "{{ item }}"
+        src: "./secrets/"
         dest: "/secrets/"
-      with_fileglob:
-        - "./secrets/csesoc.unsw.edu.au/*"
 
 
 # ----------

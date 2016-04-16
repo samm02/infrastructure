@@ -14,27 +14,23 @@ This repo uses git crypt to encrypt secrets. You'll need to be added to the user
 - Deploys specified docker containers to each server
 - Configures nginx to route to these containers as specified
 
+## Run against prod:
+```
+# All Hosts
+ansible-playbook play.servers.yml
+
+# Single Host
+ansible-playbook play.servers.yml --limit "csesoc-server"
+```
+
 
 # CSESoc CGI (`play.cgi.yml`)
 
 CSESoc Account Provisioner. This playbook is designed to configure the `~csesoc`
 account and add required CGI scripts and more.
 
-### Run Local Dev
-
-Run vagrant, setup a /fake/ CSE.
-
-```
-# Run the playbook against local
-vagrant up
-
-# Run Playbook
-ansible-playbook playbook.yml -l 192.168.101.100 
-```
-
-
 ### Run against real CSE Account (prod)
 
 ```
-ansible-playbook playbook.yml -l cse.unsw.edu.au
+ansible-playbook play.cgi.yml -limit cse
 ```
