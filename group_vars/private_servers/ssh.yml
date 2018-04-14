@@ -1,5 +1,0 @@
----
-ssh:
-  authorized_keys:
-    # Nick Whyte
-    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzhFQmx3gz+fSiTgqguRYskIrOzuYteTIRLIom7jFQSRcxIiIozX/FMOyFpc7ASmy9FNvlUzjZEcgOoTjdflUTDWp8N61pjcpO3n8FEGe7Ine7HOpbIC6ghWeDNS4nyg3Tsk3cK2kLTXBdKk+gGU7ZnvT7WzehlLLVNpnnUqmdVmy4OU4yRQ6Fvs+lVVcEkCpIa83oqLX6w/nNxv3mVXrdPYtluCOLJ/dajZht5zFLOY6hJSPuVxwy2oRSzmrSh+Dn0tBr9C5H8QtEUgHm0s4k7gHn6ivAopqyfU0WvPgiIrLPwmXysCzxrOiiXoXAT4p6bJj5W/ei62FejEeBbZTn nickw@pro.home-feb-2016

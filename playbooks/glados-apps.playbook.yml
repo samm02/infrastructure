@@ -1,0 +1,63 @@
+# This playbook provisions applications running on Glados.
+---
+- name: Add data dir
+  hosts: glados
+  tasks:
+    - name: Add data dir
+      file:
+        path: /containers/data/
+        state: directory
+
+- name: Add Containers
+  hosts: glados
+  vars_files:
+    - ./files/secrets.yml
+  tasks:
+    - name: CSESoc Website
+      docker_container:
+        name: csesoc-website
+        image: csesoc/csesoc-website-v2
+        state: started
+        recreate: yes
+        pull: yes
+        restart_policy: always
+        env: "{{ csesoc_website_env }}"
+        volumes:
+          - /containers/data/csesoc-website:/app/data
+
+    - name: Bark Server
+      docker_container:
+        name: bark-server
+        image: csesoc/bark-server
+        state: started
+        recreate: yes
+        pull: yes
+        restart_policy: always
+        env: "{{ bark_server_env }}"
+        volumes:
+          - /containers/data/bark-server:/app/data
+
+- name: Configure nginx reverse proxy
+  hosts: glados
+  tasks:
+    - name: Copy nginx config
+      copy:
+        src: glados/nginx
+        dest: /containers/conf/nginx/
+    - name: Add Nginx Container
+      docker_container:
+        name: nginx
+        image: nginx
+        state: started
+        recreate: yes
+        pull: yes
+        restart_policy: always
+        published_ports:
+          - 80:80
+          - 443:443
+        links:
+          - bark-server:bark-server
+          - csesoc-website:csesoc-website
+        volumes:
+          - /containers/conf/nginx/conf.d:/etc/nginx/conf.d
+          - /containers/conf/nginx/ssl:/etc/nginx/ssl

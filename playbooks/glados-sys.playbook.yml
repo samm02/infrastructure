@@ -1,0 +1,43 @@
+# This playbook configures a Ubuntu installation from scratch. It attempts to lock down the machine by enabling the
+# firewall and disabling SSH root access and forcing passwordless access.
+---
+- import_playbook: ssh-access.playbook.yml
+
+- name: Configure Firewall (ufw)
+  hosts: all
+  tags: security
+  tasks:
+    - name: Allow OpenSSH
+      ufw:
+        rule: allow
+        name: OpenSSH
+    - name: Allow HTTP Access (80)
+      ufw:
+        rule: allow
+        port: 80
+    - name: Allow HTTPS Access (443)
+      ufw:
+        rule: allow
+        port: 443
+    - name: Enable UFW and Block All
+      ufw:
+        state: enabled
+        policy: deny
+
+- name: Disable SSH password authentication
+  hosts: all
+  tags: security
+  roles:
+    - name: willshersystems.sshd
+      sshd:
+        PasswordAuthentication: no
+        PermitRootLogin: no
+
+- name: Install Docker
+  hosts: all
+  tags: docker
+  roles:
+    - role: geerlingguy.pip
+      pip_install_packages:
+        - name: docker
+    - role: geerlingguy.docker
