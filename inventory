@@ -1,3 +1,4 @@
 cse                 ansible_ssh_host=cse.unsw.edu.au                ansible_user=csesoc
 csesoc-server       ansible_ssh_host=csesoc-server.cse.unsw.edu.au  ansible_user=csesoc ansible_become=yes ansible_become_method=sudo
 glados              ansible_ssh_host=glados.cse.unsw.edu.au         ansible_user=csesoc ansible_become=yes ansible_become_method=sudo
+wheatley            ansible_ssh_host=wheatley.cse.unsw.edu.au       ansible_user=csesoc ansible_become=yes ansible_become_method=sudo

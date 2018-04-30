@@ -1,0 +1,13 @@
+version: '2'
+services:
+  bark-server:
+    image: csesoc/bark-server
+    environment:
+      SECRET_KEY: XXX
+      UDB_PASSWORD: XXX
+    stdin_open: true
+    volumes:
+    - /containers/data/bark-server:/app/data
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always

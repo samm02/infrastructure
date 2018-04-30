@@ -19,4 +19,4 @@
       authorized_key:
         exclusive: yes
         user: "{{ ansible_user }}"
-        key: "{{ '\n'.join(authorized_keys) }}"
+        key: "{{ '\n'.join(authorized_keys + extra_authorized_keys) }}"

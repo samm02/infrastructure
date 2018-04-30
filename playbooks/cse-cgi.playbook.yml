@@ -21,9 +21,7 @@
 
 - name: Configure UDB htaccess
   hosts: cse
-  vars_files:
-      - ./files/secrets.yml
   roles:
     - name: local.htpasswd
-      entries: "{{ udb.htpasswd_entries }}"
+      entries: "{{ udb_htpasswd_entries }}"
       dest: '~/public_html/udb/.htpasswd'

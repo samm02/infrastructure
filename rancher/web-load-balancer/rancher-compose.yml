@@ -1,0 +1,45 @@
+version: '2'
+services:
+  https-redirect:
+    scale: 1
+    start_on_create: true
+  load-balancer:
+    scale: 1
+    start_on_create: true
+    lb_config:
+      certs: []
+      default_cert: csesoc.unsw.edu.au
+      port_rules:
+      - hostname: ''
+        priority: 1
+        protocol: http
+        service: https-redirect
+        source_port: 80
+        target_port: 80
+      - hostname: www.csesoc.unsw.edu.au
+        priority: 2
+        protocol: https
+        service: csesoc-website/load-balancer
+        source_port: 443
+        target_port: 80
+      - hostname: csesoc.unsw.edu.au
+        path: ''
+        priority: 3
+        protocol: https
+        service: csesoc-website/load-balancer
+        source_port: 443
+        target_port: 80
+      - hostname: bark.csesoc.unsw.edu.au
+        priority: 4
+        protocol: https
+        service: bark-server/bark-server
+        source_port: 443
+        target_port: 8080
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      port: 42
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      reinitializing_timeout: 60000

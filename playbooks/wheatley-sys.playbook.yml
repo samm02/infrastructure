@@ -19,6 +19,10 @@
       ufw:
         rule: allow
         port: 443
+    - name: Allow Rancher Access (7654)
+      ufw:
+        rule: allow
+        port: 7654
     - name: Enable UFW and Block All
       ufw:
         state: enabled
@@ -33,6 +37,19 @@
         PasswordAuthentication: no
         PermitRootLogin: no
 
+- name: Configure fail2ban
+  hosts: all
+  tags: security
+  roles:
+    - role: nickjj.fail2ban
+      sudo: true
+      fail2ban_destemail: root@localhost
+      fail2ban_services:
+        - name: ssh
+          port: ssh
+          filter: sshd
+          logpath: /var/log/auth.log
+
 - name: Install Docker
   hosts: all
   tags: docker
@@ -41,3 +58,22 @@
       pip_install_packages:
         - name: docker
     - role: geerlingguy.docker
+  tasks:
+    - name: Add user {{ ansible_user }} to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+- hosts: all
+  name: Unattended Upgrades
+  roles:
+    - role: jnv.unattended-upgrades
+      unattended_mail: root@localhost
+      unattended_automatic_reboot_time: 02:00
+      unattended_automatic_reboot: yes
+      unattended_origins_patterns:
+        - 'origin=Ubuntu,archive=${distro_codename}-security'
+        - 'o=Ubuntu,a=${distro_codename}'
+        - 'o=Ubuntu,a=${distro_codename}-updates'
+        - 'o=Ubuntu,a=${distro_codename}-proposed-updates'
