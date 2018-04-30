@@ -92,7 +92,7 @@ Rancher is open source software that combines everything an organization needs t
 All CSESoc services must be deployed via Rancher. Deploying an application within Rancher will mean it is monitored and guaranteed to be backed up. In addition to this, it will mean that inbound traffic can be easily routed to it and terminated with an SSL certificate at no additional effort to the deployer. 
 
 ## Accessing Rancher
-The rancher UI is exposed on port `7654` over `ssl`. Port `7654` is blocked outside of UNSW so you must either be connected to the CSE VPN or be inside the UNSW network. [https://wheatley.cse.unsw.edu.au:7654]()
+The rancher UI is exposed on port `7654` over `ssl`. Port `7654` is blocked outside of UNSW so you must either be connected to the CSE VPN or be inside the UNSW network. [https://wheatley.cse.unsw.edu.au:7654](https://wheatley.cse.unsw.edu.au:7654)
 
 Alternatively, you can access the UI outside of UNSW by using an SSL local tunnel:
 
@@ -100,19 +100,19 @@ Alternatively, you can access the UI outside of UNSW by using an SSL local tunne
 ssh -L 7654:127.0.0.1:7654 csesoc@wheatley.cse.unsw.edu.au
 ``` 
 
-Once connected, you should be able to access the UI on [https://localhost:7654]().
+Once connected, you should be able to access the UI on [https://localhost:7654](https://localhost:7654).
 
 
 ## Services/Stacks 
 
-The following stacks are currently provisioned. The docker/rancher compose files can be found in the [rancher]() directory. These configurations have had secrets removed and would need to be re-added in the event of a re-deployment.
+The following stacks are currently provisioned. The docker/rancher compose files can be found in the [rancher](rancher) directory. These configurations have had secrets removed and would need to be re-added in the event of a re-deployment.
 
 ### CSESoc Website
 The CSESoc Website stack is deployed with a collection of containers.
 - `csesoc-website`: The website django application
 - `load-balancer`: Handles URL/host pattern matching.
-- `www-redirect`: Redirects non-www traffic to [www.csesoc.unsw.edu.au]()
-- `media-admin`: Provides a web UI for uploading static assets to the `/static/media` directory. It is accessible via [https://www.csesoc.unsw.edu.au/media-admin]().
+- `www-redirect`: Redirects non-www traffic to [www.csesoc.unsw.edu.au](www.csesoc.unsw.edu.au)
+- `media-admin`: Provides a web UI for uploading static assets to the `/static/media` directory. It is accessible via [https://www.csesoc.unsw.edu.au/media-admin](https://www.csesoc.unsw.edu.au/media-admin).
 
 
 ### Bark Server

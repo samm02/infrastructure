@@ -5,7 +5,7 @@ Hello reader! It's probably that time of year again where it's time to renew SSL
 UNSW IT will issue certificates for free. There is no need to pay a third party for certificates. 
 
 ## Requesting a certificate
-To request a new certificate from UNSW IT you must generate a private key & CSR. If you are simply renewing a certificate, you can probably skip onto the [CSR generation step](generate-the-csr)
+To request a new certificate from UNSW IT you must generate a private key & CSR. If you are simply renewing a certificate, you can probably skip onto the [CSR generation step](#generate-the-csr)
 
 ```bash
 export DOMAIN=foo.cse.unsw.edu.au
