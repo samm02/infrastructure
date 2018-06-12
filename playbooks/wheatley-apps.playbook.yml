@@ -11,11 +11,11 @@
   tags: rancher
   hosts: all
   tasks:
-    - name: Copy nginx config
+    - name: Copy rancher root certificate
       copy:
-        src: rancher-nginx/ssl/certs/wheatley.cse.unsw.edu.au.crt
+        src: rancher-nginx/ssl/certs/wheatley.cse.unsw.edu.au.bundle.crt
         dest: /var/lib/rancher/etc/ssl/ca.crt
-    - name: Copy SSL certs
+    - name: Copy nginx config
       copy:
         src: rancher-nginx
         dest: /containers/conf/
