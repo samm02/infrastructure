@@ -35,6 +35,13 @@ services:
         service: bark-server/bark-server
         source_port: 443
         target_port: 8080
+      - hostname: publications.csesoc.unsw.edu.au
+        path: ''
+        priority: 5
+        protocol: https
+        service: csesoc-publications/wordpress
+        source_port: 443
+        target_port: 80
     health_check:
       healthy_threshold: 2
       response_timeout: 2000

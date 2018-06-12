@@ -1,0 +1,28 @@
+version: '2'
+services:
+  wordpress:
+    image: wordpress
+    environment:
+      WORDPRESS_DB_USER: XX
+      WORDPRESS_DB_PASSWORD: XX
+    stdin_open: true
+    volumes:
+    - /containers/data/csesoc-publications/wordpress/wp-content:/var/www/html/wp-content
+    tty: true
+    links:
+    - mysql:mysql
+    labels:
+      io.rancher.container.pull_image: always
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_USER: XX
+      MYSQL_PASSWORD: XX
+      MYSQL_DATABASE: XX
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+    stdin_open: true
+    volumes:
+    - /containers/data/csesoc-publications/mysql:/var/lib/mysql
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
