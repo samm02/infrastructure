@@ -80,9 +80,9 @@ ansible-playbook  playbooks/ssh-access.playbook.yml
 # Provision CSE account
 ansible-playbook  -l cse playbooks/cse-cgi.playbook.yml
 # Provision Wheatley System
-ansible-playbook  -l glados playbooks/wheatley-sys.playbook.yml
+ansible-playbook  -l wheatley playbooks/wheatley-sys.playbook.yml
 # Provision Wheatley Apps
-ansible-playbook  -l glados playbooks/wheatley-apps.playbook.yml
+ansible-playbook  -l wheatley playbooks/wheatley-apps.playbook.yml
 ```
 
 The `wheatley-sys.playbook.yml` playbook will provision the system with the SSH `authorised_keys` defined in`ssh-access.playbook.yml`. This playbook can be individually run on other hosts to configure SSH access.
