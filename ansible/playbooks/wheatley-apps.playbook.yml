@@ -7,7 +7,28 @@
         path: /containers/data/
         state: directory
 
-- name: Rancher UI
+- hosts: all
+  name: Configure container data backups
+  tags: backups
+  become: root
+  tasks:
+    - name: Add profile bin dir
+      file:
+        path: ~/bin/
+        state: directory
+    - name: Copy backup job script
+      copy:
+        src: backup-container-data.sh
+        dest: ~/bin/backup-container-data.sh
+        mode: +x
+    - name: Add nightly cron job
+      cron:
+        name: "backup container data"
+        hour: 0
+        minute: 0
+        job: ~/bin/backup-container-data.sh && curl -fsS --retry 3 https://hchk.io/{{ cron_healthcheck_uuid_container_data }} > /dev/null
+
+- name: Setup Rancher UI
   tags: rancher
   hosts: all
   tasks:
