@@ -62,7 +62,7 @@ git secret reveal
 
 # Using Ansible / Running Playbooks
 
-A playbook declares configuration and manual steps required to provision a machine. The playbooks in this repo can be found in the [playbooks](playbooks/) dir.
+A playbook declares configuration and manual steps required to provision a machine. The playbooks in this repo can be found in the [playbooks](ansible/playbooks/) dir.
 
 Before running playbooks, ensure you have decrypted the repo. Failure to decrypt the repo will result in copying encrypted secrets to target servers.
 

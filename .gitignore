@@ -1,9 +1,6 @@
 .vagrant/*
-roles/*
-!roles/local.*
 *.DS_Store
 .idea
-*.retry
 .gitsecret/keys/random_seed
 *.secrets.yml
 *.secrets.yaml
