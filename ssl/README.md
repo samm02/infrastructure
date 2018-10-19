@@ -5,7 +5,7 @@ Hello reader! It's probably that time of year again where it's time to renew SSL
 UNSW IT will issue certificates for free. There is no need to pay a third party for certificates. 
 
 ## Requesting a certificate
-To request a new certificate from UNSW IT you must generate a private key & CSR. If you are simply renewing a certificate, you can probably skip onto the [CSR generation step](#generate-the-csr)
+To request a new certificate from UNSW IT you must generate a private key & CSR. If you are simply renewing a certificate, you can probably skip onto the [CSR generation step](#generate-the-csr) (unless you have suspicion the private key has been compromised)
 
 ```bash
 export DOMAIN=foo.cse.unsw.edu.au
@@ -59,7 +59,13 @@ cat "${DOMAIN}.crt" ca-intermediate.crt ca.crt > "${DOMAIN}.bundle.crt"
 
 ## Re-deploy updated certificates
 
-TODO NW
+Once the renewed certificates are in the correct place in this repo, you will need to re-deploy them to the production environment by running the apropriate playbook. See [Using Ansible](../README.md#using-ansible--running-playbooks).
+
+```bash
+ansible-playbook  -l wheatley playbooks/wheatley-apps.playbook.yml
+```
+
+Additionally, you will need to provide the updated certificate and private key to [Rancher's SSL termination](https://wheatley.cse.unsw.edu.au:7654/env/1a5/infra/certificates). 
 
 # FAQ
 

@@ -8,6 +8,20 @@ You'll need the following tools to do anything useful with this repo.
   - [Git Secret](http://git-secret.io/).
   - [Ansible](http://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
+# Exec Handover
+
+Congratulations new CSESoc Dev Head. You have now inherited all of CSESoc's production infrastructure!
+
+Being dev head is a reasonably simple task once you get your head around all of the tooling outlined in this repo. Some of the most difficult tasks you'll need to deal with will include:
+
+- Adding new deployment stacks in rancher
+- Upgrading the deployment environment Linux distribution
+- Renewing [SSL Certificates](ssl)
+
+Fortunately for you, this is all documented in this repo. If you find any of the documentation lacking in any way, feel free to make modifications so that future dev heads can benefit from the newfound knowledge. 
+
+If you are unsure of why something is a particular way and not another, or wish to get help using the tooling exposed in this repo, please get in contact with a previous dev head.    
+ 
 # Servers under management
 
 ### CSESoc CSE Account
@@ -27,19 +41,35 @@ Wheatley runs the following services:
 
 Data in the `/containers` directory is backed up to the `ssh://csesoc@cse.unsw.edu.au:~/backups` every night at midnight.
 
+**Software Updates**
+
+Wheatley is [configured](https://github.com/csesoc/infrastructure/blob/0255c4e0e0f4cf05f399b42e44340886a883ad4d/ansible/playbooks/wheatley-sys.playbook.yml#L68-L79) to automatically install software updates nightly. Wheatley should be checked in on at a regular frequency to ensure critical updates are being applied and that system reboots are occurring to apply critical kernel patches.
+
+When a new dist version is released, you will need to undertake the `dist-upgrade` process for Ubuntu to upgrade.  
+
 # Permitting User Access
 
 For the most part, collaborators can simply be added as users to the Rancher instance, and **do not** need SSH access to the underlying hosts. This will give those users permissions to launch new stacks and manage them.
 
-# Handover
+# Adding Additional Collaborators
 
 To add a new infrastructure collaborator you must:
 
 1. Add the user to the git secret collaborators for this repo (`git secret tell your@gpg.email`).
 2. Re-encrypt all secret files. (`git secret hide -c`).
 3. Add the user's ssh public key to the authorised_keys in `ssh-access.playbook.yml` and apply the playbook to all hosts in the inventory (`ansible-playbook playbooks/ssh-access.playbook.yml`). This will permit the new collaborator SSH access to all CSESoc owned hosts.
-4. Commit and push all of these changes.
+5. Commit and push all of these changes.
 
+# Removing Collaborators
+
+Memberships to the dev team are transient. People may come and go. For this reason it's important to know how to secure the CSESoc deployment environment.
+
+1. Remove the user from the git secret collaborators for this repo (`git secret killperson your@gpg.email`)
+2. (Optional): Rotate all affected secrets. If the member leaving goes rogue they will still have access to any unchanged secrets. This means they can still access the infrastructure. To resolve this any secrets they have had access to should be rotated.
+3. Re-encrypt all the secret files. (`git secret hide -c`)
+4. Remove the user's ssh public key to the authorised_keys in `ssh-access.playbook.yml` and apply the playbook to all hosts in the inventory (`ansible-playbook playbooks/ssh-access.playbook.yml`). This will remove access via SSH access to all CSESoc owned hosts.
+5. Remove the user's personal account from all associated services (e.g. [rancher](https://wheatley.cse.unsw.edu.au:7654), [csesoc-website](https://www.csesoc.unsw.edu.au), [csesoc-publications](https://publications.csesoc.unsw.edu.au/), [csesoc-website-media-admin](https://www.csesoc.unsw.edu.au/media-admin))
+6. Commit and push all of these changes.
 
 # Secrets
 
@@ -99,16 +129,7 @@ Rancher is open source software that combines everything an organization needs t
 All CSESoc services must be deployed via Rancher. Deploying an application within Rancher will mean it is monitored and guaranteed to be backed up. In addition to this, it will mean that inbound traffic can be easily routed to it and terminated with an SSL certificate at no additional effort to the deployer.
 
 ## Accessing Rancher
-The rancher UI is exposed on port `7654` over `ssl`. Port `7654` is blocked outside of UNSW so you must either be connected to the CSE VPN or be inside the UNSW network. [https://wheatley.cse.unsw.edu.au:7654](https://wheatley.cse.unsw.edu.au:7654)
-
-Alternatively, you can access the UI outside of UNSW by using an SSL local tunnel:
-
-```bash
-ssh -L 7654:127.0.0.1:7654 csesoc@wheatley.cse.unsw.edu.au
-```
-
-Once connected, you should be able to access the UI on [https://localhost:7654](https://localhost:7654).
-
+The rancher UI is exposed on port `7654` over `ssl`. Access it at [https://wheatley.cse.unsw.edu.au:7654](https://wheatley.cse.unsw.edu.au:7654)
 
 ## Services/Stacks
 
@@ -121,9 +142,17 @@ The CSESoc Website stack is deployed with a collection of containers.
 - `www-redirect`: Redirects non-www traffic to [www.csesoc.unsw.edu.au](www.csesoc.unsw.edu.au)
 - `media-admin`: Provides a web UI for uploading static assets to the `/static/media` directory. It is accessible via [https://www.csesoc.unsw.edu.au/media-admin](https://www.csesoc.unsw.edu.au/media-admin).
 
-
 ### Bark Server
 Bark server is a simple single container deployment running the bark backend server.
+
+### CSESoc Publications
+
+This stack runs the [CSESoc publications](https://publications.csesoc.unsw.edu.au) wordpress deployment. 
+
+It is comprised of the following containers:
+
+- `mysql`: The backing store for the wordpress instance.
+- `wordpress`: The wordpress PHP application instance.
 
 ### Web Load Balancer
 
@@ -131,6 +160,14 @@ Bark server is a simple single container deployment running the bark backend ser
 
 By default, all traffic on port `80` is redirect to it's `HTTPS` counterpart on port `443`. This is done via the `geldim/https-redirect` container.
 
-## Auto Deploy on master push
+## Upgrade a stack automatically on new container image push
 
-TODO (NW) - fill out this section.
+TODO (NW) - fill out this section when we have a strategy for automatically upgrading stacks when a new container image is released.
+
+## Pull Schedule
+
+TODO (NW) - fill out this section when we have a strategy for automatically pulling new container versions (i.e. upgrading wordpress)
+
+## Monitoring
+
+TODO (NW) - Fill out this section with details on service monitoring once it is configured/set up.
